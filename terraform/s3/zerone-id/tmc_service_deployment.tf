@@ -51,7 +51,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "tmc-sample_deployment_lifecycl
   rule {
     id     = "intelligent-tiering"
     status = "Enabled"
-
+    filter {
+      
+    }
     transition {
       days          = 3
       storage_class = "INTELLIGENT_TIERING"
