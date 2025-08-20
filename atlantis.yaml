@@ -30,7 +30,7 @@ projects:
   - name: iam/zerone-id
     dir: terraform/iam/zerone-id
     workspace: default
-    terraform_version: 1.5.7
+    terraform_version: 1.11.4
     autoplan:
       when_modified: [
          "*.tf",
@@ -48,7 +48,7 @@ workflows:
       steps:
         - init:
             extra_args: [
-              '-backend-config="role_arn=arn:aws:iam::066346343248:role/atlantis-test-id-admin"',
+              '-backend-config="assume_role={role_arn=\"arn:aws:iam::066346343248:role/atlantis-test-id-admin\"}"',
               '-upgrade=false'
             ]
         - plan:
