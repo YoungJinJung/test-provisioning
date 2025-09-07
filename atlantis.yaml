@@ -40,6 +40,19 @@ projects:
     apply_requirements: []
     workflow: id
 
+  - name: platform/jenkins/xyzd_apnortheast2
+    dir: terraform/platform/jenkins/xyzd_apnortheast2
+    workspace: default
+    terraform_version: 1.5.7
+    autoplan:
+      when_modified: [
+         "*.tf",
+         "terraform.tfvars"
+      ]
+      enabled: true
+    apply_requirements: []
+    workflow: id
+
 #### Workflows #####
 workflows:
   # id

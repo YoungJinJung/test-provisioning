@@ -25,16 +25,16 @@ variable "account_id" {
 variable "remote_state" {
   default = {
     vpc = {
-      tmcd_apnortheast2 = {
-        bucket = "zerone-id-apnortheast2-tfstate"
-        key    = "provisioning/terraform/vpc/tmcd_apnortheast2/terraform.tfstate"
+      xyzd_apnortheast2 = {
+        bucket = "test-id-apnortheast2-tfstate"
+        key    = "provisioning/terraform/vpc/xyzd_apnortheast2/terraform.tfstate"
         region = "ap-northeast-2"
       }
     }
     iam = {
       zerone-id = {
-        bucket = "zerone-id-apnortheast2-tfstate"
-        key    = "provisioning/terraform/iam/zerone-id/terraform.tfstate"
+        bucket = "test-id-apnortheast2-tfstate"
+        key    = "provisioning/terraform/iam/test-id/terraform.tfstate"
         region = "ap-northeast-2"
       }
     }
