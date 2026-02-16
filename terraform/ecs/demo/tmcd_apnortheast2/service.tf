@@ -17,10 +17,10 @@ module "ecs_service" {
     type = "CODE_DEPLOY"
   }
 
-  create_tasks_iam_role = false
+  create_tasks_iam_role     = false
   create_task_exec_iam_role = false
-  task_exec_iam_role_arn = data.terraform_remote_state.iam.outputs.demo_tmcdapne2_task_exec_arn
-  tasks_iam_role_arn = data.terraform_remote_state.iam.outputs.demo_tmcdapne2_task_arn
+  task_exec_iam_role_arn    = data.terraform_remote_state.iam.outputs.demo_tmcdapne2_task_exec_arn
+  tasks_iam_role_arn        = data.terraform_remote_state.iam.outputs.demo_tmcdapne2_task_arn
   # Container definition(s)
   container_definitions = {
     (local.container_name) = {

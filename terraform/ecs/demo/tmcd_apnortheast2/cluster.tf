@@ -16,6 +16,6 @@ module "ecs_cluster" {
         weight = 1
       }
     }
-  }  
+  }
   tags = local.tags
 }

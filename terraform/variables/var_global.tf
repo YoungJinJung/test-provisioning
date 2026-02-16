@@ -33,8 +33,8 @@ variable "remote_state" {
     }
     iam = {
       zerone-id = {
-        bucket = "test-id-apnortheast2-tfstate"
-        key    = "provisioning/terraform/iam/test-id/terraform.tfstate"
+        bucket = "zerone-id-apnortheast2-tfstate"
+        key    = "provisioning/terraform/iam/zerone-id/terraform.tfstate"
         region = "ap-northeast-2"
       }
     }

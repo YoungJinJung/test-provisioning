@@ -1,0 +1,153 @@
+name: "Auto Create PR"
+description: "Create branch, commit changes, and create PR with auto-generated description"
+trigger: "manual"
+command: "/create-pr"
+script: |
+  #!/bin/bash
+  
+  # 1. 현재 상태 확인
+  echo "🔍 Checking current git status..."
+  git status --porcelain
+  
+  # 2. 변경된 파일들 확인
+  CHANGED_FILES=$(git diff --name-only HEAD)
+  STAGED_FILES=$(git diff --cached --name-only)
+  UNTRACKED_FILES=$(git ls-files --others --exclude-standard)
+  
+  if [[ -z "$CHANGED_FILES" && -z "$STAGED_FILES" && -z "$UNTRACKED_FILES" ]]; then
+      echo "❌ No changes detected. Nothing to commit."
+      exit 1
+  fi
+  
+  # 3. 브랜치명 자동 생성 (타임스탬프 기반)
+  TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+  BRANCH_NAME="feature/auto-pr-${TIMESTAMP}"
+  
+  echo "🌿 Creating new branch: $BRANCH_NAME"
+  git checkout -b "$BRANCH_NAME"
+  
+  # 4. 모든 변경사항 스테이징
+  echo "📦 Staging all changes..."
+  git add .
+  
+  # 5. 변경된 파일 분석 및 커밋 메시지 생성
+  echo "📝 Analyzing changes for commit message..."
+  
+  # Terraform 파일 변경 감지
+  TF_CHANGES=$(git diff --cached --name-only | grep -E '\.(tf|tfvars)$' | wc -l)
+  YAML_CHANGES=$(git diff --cached --name-only | grep -E '\.(yaml|yml)$' | wc -l)
+  CONFIG_CHANGES=$(git diff --cached --name-only | grep -E '\.(json|conf|config)$' | wc -l)
+  
+  # 커밋 메시지 자동 생성
+  if [[ $TF_CHANGES -gt 0 ]]; then
+      COMMIT_TYPE="feat(terraform)"
+      COMMIT_MSG="Update terraform infrastructure configuration"
+  elif [[ $YAML_CHANGES -gt 0 ]]; then
+      COMMIT_TYPE="feat(config)"
+      COMMIT_MSG="Update YAML configuration files"
+  elif [[ $CONFIG_CHANGES -gt 0 ]]; then
+      COMMIT_TYPE="feat(config)"
+      COMMIT_MSG="Update configuration files"
+  else
+      COMMIT_TYPE="feat"
+      COMMIT_MSG="Update project files"
+  fi
+  
+  # 6. 커밋 실행
+  echo "💾 Committing changes..."
+  git commit -m "$COMMIT_TYPE: $COMMIT_MSG"
+  
+  # 7. 브랜치 푸시
+  echo "🚀 Pushing branch to remote..."
+  git push -u origin "$BRANCH_NAME"
+  
+  # 8. 변경사항 상세 분석 (PR Description용)
+  echo "📊 Generating PR description..."
+  
+  # 변경된 파일 목록
+  CHANGED_FILES_LIST=$(git diff --name-only HEAD~1)
+  ADDED_FILES=$(git diff --name-status HEAD~1 | grep "^A" | cut -f2)
+  MODIFIED_FILES=$(git diff --name-status HEAD~1 | grep "^M" | cut -f2)
+  DELETED_FILES=$(git diff --name-status HEAD~1 | grep "^D" | cut -f2)
+  
+  # PR Description 생성
+  PR_DESCRIPTION="## 🔄 Changes Summary
+  
+  ### 📋 Modified Files"
+  
+  if [[ -n "$MODIFIED_FILES" ]]; then
+      PR_DESCRIPTION+="
+  $(echo "$MODIFIED_FILES" | sed 's/^/- /')"
+  else
+      PR_DESCRIPTION+="
+  - None"
+  fi
+  
+  PR_DESCRIPTION+="
+  
+  ### ➕ Added Files"
+  
+  if [[ -n "$ADDED_FILES" ]]; then
+      PR_DESCRIPTION+="
+  $(echo "$ADDED_FILES" | sed 's/^/- /')"
+  else
+      PR_DESCRIPTION+="
+  - None"
+  fi
+  
+  PR_DESCRIPTION+="
+  
+  ### ❌ Deleted Files"
+  
+  if [[ -n "$DELETED_FILES" ]]; then
+      PR_DESCRIPTION+="
+  $(echo "$DELETED_FILES" | sed 's/^/- /')"
+  else
+      PR_DESCRIPTION+="
+  - None"
+  fi
+  
+  PR_DESCRIPTION+="
+  
+  ### 🏗️ Infrastructure Changes"
+  
+  # Terraform 변경사항 상세 분석
+  if [[ $TF_CHANGES -gt 0 ]]; then
+      PR_DESCRIPTION+="
+  - **Terraform files updated**: $TF_CHANGES files
+  - **Resources affected**: $(git diff --cached --name-only | grep '\.tf$' | xargs -I {} basename {} .tf | tr '\n' ', ' | sed 's/,$//')"
+  fi
+  
+  # Atlantis 설정 확인
+  if echo "$CHANGED_FILES_LIST" | grep -q "atlantis.yaml"; then
+      PR_DESCRIPTION+="
+  - **Atlantis configuration updated**"
+  fi
+  
+  PR_DESCRIPTION+="
+  
+  ### 🔍 Review Checklist
+  - [ ] Terraform plan reviewed
+  - [ ] Security implications considered  
+  - [ ] Documentation updated if needed
+  - [ ] Tests passing
+  
+  ---
+  *Auto-generated PR from Kiro Hook*"
+  
+  # 9. GitHub CLI로 PR 생성
+  echo "🎯 Creating pull request..."
+  
+  # PR 제목 생성
+  PR_TITLE="$COMMIT_TYPE: $COMMIT_MSG"
+  
+  # PR 생성 (리뷰어 자동 할당 옵션)
+  gh pr create \
+      --title "$PR_TITLE" \
+      --body "$PR_DESCRIPTION" \
+      --base main \
+      --head "$BRANCH_NAME" \
+      --draft=false
+  
+  echo "✅ PR created successfully!"
+  echo "🔗 View PR: $(gh pr view --web)"

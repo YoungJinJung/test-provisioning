@@ -1,0 +1,46 @@
+name: "Quick PR"
+description: "Quick PR creation with minimal setup"
+trigger: "manual"
+command: "/qpr"
+script: |
+  #!/bin/bash
+  
+  # 현재 변경사항 확인
+  if ! git diff --quiet || ! git diff --cached --quiet || [[ -n $(git ls-files --others --exclude-standard) ]]; then
+      
+      # 타임스탬프 기반 브랜치 생성
+      BRANCH_NAME="feature/update-$(date +"%m%d-%H%M")"
+      
+      echo "🌿 Creating branch: $BRANCH_NAME"
+      git checkout -b "$BRANCH_NAME"
+      
+      echo "📦 Adding all changes..."
+      git add .
+      
+      # 간단한 커밋 메시지
+      COMMIT_MSG="feat: update infrastructure configuration"
+      
+      echo "💾 Committing..."
+      git commit -m "$COMMIT_MSG"
+      
+      echo "🚀 Pushing..."
+      git push -u origin "$BRANCH_NAME"
+      
+      # 간단한 PR 생성
+      echo "🎯 Creating PR..."
+      gh pr create \
+          --title "$COMMIT_MSG" \
+          --body "## Changes
+      
+      Auto-generated PR with infrastructure updates.
+      
+      ### Files Changed
+      $(git diff --name-only HEAD~1 | sed 's/^/- /')
+      
+      Please review the changes." \
+          --base main
+      
+      echo "✅ Done! PR created successfully."
+  else
+      echo "❌ No changes to commit."
+  fi

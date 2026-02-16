@@ -11,6 +11,10 @@ resource "aws_iam_group_membership" "devops_black" {
   ]
 
   group = aws_iam_group.devops_black.name
+
+  lifecycle {
+    ignore_changes = [ users ]
+  }
 }
 ########### Managed Policies ####################
 resource "aws_iam_group_policy_attachment" "devops_black" {

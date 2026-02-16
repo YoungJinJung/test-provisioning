@@ -6,6 +6,9 @@ terraform {
     key            = "provisioning/terraform/iam/zerone-id/terraform.tfstate"
     region         = "ap-northeast-2"
     encrypt        = true
-    dynamodb_table = "terraform-lock"
+    use_lockfile = true
+    assume_role = {
+      role_arn = "arn:aws:iam::066346343248:role/terraform-runner"
+    }
   }
 }

@@ -1,4 +1,4 @@
-output "aws_secretsmanager_demo_tmcdapne2_id" {
-  description = "demo_tmcdapne2 id"
-  value       = module.demo_tmcdapne2.id
+output "aws_secretsmanager_demo_xyzdapne2_id" {
+  description = "demo_xyzdapne2 id"
+  value       = module.demo_xyzdapne2.id
 }

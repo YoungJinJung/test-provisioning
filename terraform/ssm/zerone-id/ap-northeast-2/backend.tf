@@ -7,6 +7,9 @@ terraform {
     region         = "ap-northeast-2"
     encrypt        = true
     dynamodb_table = "terraform-lock"
+    assume_role = {
+      role_arn = "arn:aws:iam::066346343248:role/terraform-runner"
+    }
   }
 }
 

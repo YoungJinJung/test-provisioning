@@ -2,12 +2,12 @@ variable "sg_variables" {
   default = {
     external_lb = {
       tags = {
-        tmcdapne2 = {
-          Name    = "demoapp-tmcdapne2-external-lb-sg"
+        xyzdapne2 = {
+          Name    = "demoapp-xyzdapne2-external-lb-sg"
           app     = "demoapp"
           project = "demoapp"
           env     = "dev"
-          stack   = "tmcdapne2"
+          stack   = "xyzdapne2"
         }
       }
     }

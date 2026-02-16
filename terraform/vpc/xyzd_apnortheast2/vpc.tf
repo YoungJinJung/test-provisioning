@@ -26,27 +26,22 @@ resource "aws_internet_gateway" "default" {
   }
 }
 
-resource "aws_eip" "nat" {
-  count = length(var.availability_zones)
-  # domain = "vpc"
+# resource "aws_eip" "nat" {
+#   lifecycle {
+#     create_before_destroy = true
+#   }
+# }
 
-  lifecycle {
-    create_before_destroy = true
-  }
-}
+# resource "aws_nat_gateway" "nat" {
+#   allocation_id = aws_eip.nat.id
 
-resource "aws_nat_gateway" "nat" {
-  count = length(var.availability_zones)
+#   subnet_id = aws_subnet.public[0].id
 
-  allocation_id = element(aws_eip.nat.*.id, count.index)
-
-  subnet_id = element(aws_subnet.public.*.id, count.index)
-
-  tags = {
-    Name = "NAT-GW${count.index}-${local.vpc_name}"
-  }
-}
-
+#   tags = {
+#     Name = "NAT-GW-${local.vpc_name}"
+#   }
+# }
+#
 # PUBLIC SUBNETS
 resource "aws_subnet" "public" {
   count  = length(var.availability_zones)

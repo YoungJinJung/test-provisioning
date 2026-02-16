@@ -71,6 +71,17 @@ data "aws_iam_policy_document" "terraform_runner_s3" {
       "arn:aws:s3:::*-apnortheast2-tfstate/*"
     ]
   }
+
+    statement {
+    sid    = "AllowTFBackendDeleteObject"
+    effect = "Allow"
+    actions = [
+      "s3:DeleteObject"
+    ]
+    resources = [
+      "arn:aws:s3:::*-apnortheast2-tfstate/*.tflock"
+    ]
+  }
 }
 
 #dynamodb

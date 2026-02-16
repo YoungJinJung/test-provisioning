@@ -1,8 +1,8 @@
 
-module "demo_tmcdapne2" {
+module "demo_xyzdapne2" {
   source              = "../../_module/secretsmanager"
   key_name            = "demo"
-  env                 = "tmcdapne2"
+  env                 = "xyzdapne2"
   rotation_lambda_arn = ""
   kms_arn             = data.terraform_remote_state.kms.outputs.aws_kms_key_apne2_deployment_common_arn
   tags = {
@@ -11,10 +11,10 @@ module "demo_tmcdapne2" {
   }
 }
 
-resource "aws_secretsmanager_secret_version" "demo_tmcdapne2" {
-  secret_id = module.demo_tmcdapne2.id
+resource "aws_secretsmanager_secret_version" "demo_xyzdapne2" {
+  secret_id = module.demo_xyzdapne2.id
   secret_string = sensitive(jsonencode(
-    data.sops_file.demo_tmcdapne2_value.data
+    data.sops_file.demo_xyzdapne2_value.data
     )
   )
 }
