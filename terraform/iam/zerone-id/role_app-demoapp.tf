@@ -35,7 +35,7 @@ resource "aws_iam_role_policy" "demoapp_operation" {
         "Effect" : "Allow",
         "Action" : "secretsmanager:GetSecretValue",
         "Resource" : [
-          data.terraform_remote_state.secretsmanager.outputs.aws_secretsmanager_demo_tmcdapne2_id
+          data.terraform_remote_state.secretsmanager.outputs.aws_secretsmanager_demo_xyzdapne2_id
         ]
       }
     ]
@@ -52,6 +52,6 @@ resource "aws_iam_role_policy_attachment" "demoapp_attach" {
   policy_arn = aws_iam_policy.app_universal.arn
 }
 
-output "app_demoapp_instance_profile" {
+output "demoapp_instance_profile" {
   value = aws_iam_instance_profile.app_demoapp.arn
 }

@@ -58,9 +58,9 @@ variable "remote_state" {
         }
       }
       demo = {
-        tmcdapne2 = {
+        xyzdapne2 = {
           bucket = "zerone-id-apnortheast2-tfstate"
-          key    = "provisioning/terraform/ecs/demo/tmcd_apnortheast2/terraform.tfstate"
+          key    = "provisioning/terraform/ecs/demo/xyzd_apnortheast2/terraform.tfstate"
           region = "ap-northeast-2"
         }
       }
