@@ -102,6 +102,11 @@ variable "remote_state" {
         key    = "provisioning/terraform/eks/tmcd_apnortheast2/tmcdapne2-nhwy/terraform.tfstate"
         region = "ap-northeast-2"
       }
+      xyzdapne2-lfzo = {
+        bucket = "zerone-id-apnortheast2-tfstate"
+        key    = "provisioning/terraform/eks/xyzd_apnortheast2/xyzdapne2-lfzo/terraform.tfstate"
+        region = "ap-northeast-2"
+      }
     }
 
     s3 = {

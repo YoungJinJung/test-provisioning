@@ -1,3 +1,6 @@
 **/.terraform/*
 *.code-workspace
 .DS*
+.omx/
+.terraform-plugin-cache/
+.terraform-tmp/
